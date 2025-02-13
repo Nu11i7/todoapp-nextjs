@@ -1,8 +1,14 @@
+"use client"
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { signOut, useSession } from 'next-auth/react'
 
 const Header = () => {
+
+    const { data: session } = useSession();
+    const user = session?.user;
+
     return (
         <header className='bg-slate-600 text-gray-100 shadow-lg'>
             <nav className='flex items-center justify-between p-4'>
@@ -13,16 +19,21 @@ const Header = () => {
                     <Link href="/" className='text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium'>
                         ホーム
                     </Link>
+                    {user ? "" 
+                    :
                     <Link href="/login" className='text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium'>
-                        ログイン
-                    </Link>
+                    ログイン</Link>
+                    }
 
-                    <Link href={`/profile`}>
+                    {user ? <button onClick={() => signOut({ callbackUrl: "/login" })} 
+                    className='text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium'>ログアウト</button> : ""}
+
+                    <Link href={`/`}>
                     <Image 
                     width={50}
                     height={50}
                     alt="profile_icon"
-                    src={"/default_icon.png"} />   
+                    src={user?.image || "/default_icon.png"} />   
                     </Link>
                 </div>
             </nav>
